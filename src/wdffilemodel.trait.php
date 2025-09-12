@@ -255,7 +255,7 @@ trait WdfFileModel
      */
     public static function ProcessUploads($forced_mime=false, $extra_columns=[]):array
     {
-        $res = array();
+        $res = [];
         foreach( $_FILES as $file )
         {
             if ($file['error'] == UPLOAD_ERR_NO_FILE)
@@ -338,7 +338,7 @@ trait WdfFileModel
     static function FormatSize($size)
 
     {
-        $bytes = $size; $h = array('B','kB','MB','GB','TB','PB','EB','ZB','YB');
+        $bytes = $size; $h = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
         for($i = 0; ($bytes / 1024) > 1; $i++, $bytes /= 1024) {}
         return round($bytes, 0).$h[$i];
     }
