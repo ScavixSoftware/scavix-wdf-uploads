@@ -377,7 +377,7 @@ trait WdfFileModel
         else
             \ScavixWDF\WdfResource::ValidatedCacheResponse($file);
         @ob_clean();
-        $m = strtolower(ifavail($_SERVER, 'REQUEST_METHOD') ?: 'get');
+        $m = strtolower($_SERVER['REQUEST_METHOD'] ?? 'get');
         if ($m == 'get' || $m == 'post')
         {
             readfile($file);
