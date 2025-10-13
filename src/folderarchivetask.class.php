@@ -41,12 +41,33 @@ class FolderArchiveTask extends Task
         $fa->forEach($present_in_arch, $present_locally, function ($arch, $local, $fa)use($callback,&$maxfiles, $end)
         {
             $callback($arch, $local, $fa);
-            if (--$maxfiles < 1)
+            if ($maxfiles != 'all' && (--$maxfiles < 1))
                 return false;
             if (time() > $end)
                 return false;
         });
         $fa->removeEmptyLocalFolders();
+    }
+
+    public static function ListFiles($folder, $callback)
+    {
+        $maxfiles = 'all';
+        $maxruntime = 86400;
+        $end = false;
+        $cb = function ($arch, $local, $fa) use (&$callback)
+        {
+            $r = $callback($fa->folder, $arch, $local);
+            if ($r === false)
+                $end = true;
+            return $r;
+        };
+        self::eachFiles($folder, true, true, $maxfiles, $maxruntime, $cb);
+        if ($end)
+            return;
+        self::eachFiles($folder, false, true, $maxfiles, $maxruntime, $cb);
+        if ($end)
+            return;
+        self::eachFiles($folder, true, false, $maxfiles, $maxruntime, $cb);
     }
 
     public static function MoveSomeFiles($folder, $maxfiles, $maxruntime, $verbose = false)

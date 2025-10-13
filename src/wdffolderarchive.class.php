@@ -453,7 +453,7 @@ class WdfFolderArchive
      * @param string $path_inside_archive Path inside the archive.
      * @return array Array of file paths that were removed.
      */
-    function delete($path_inside_archive):array
+    function delete($path_inside_archive):array|null
     {
         return $this->runAtomar(function () use ($path_inside_archive, &$result)
         {
@@ -510,9 +510,32 @@ class WdfFolderArchive
 
         $path = $this->makeRelativePath($local_path);
         $res = $this->addOrUpdate(escapeshellarg($path));
-        if ($keep_local)
+        if (!$keep_local)
             @unlink($local_path);
         return $res;
+    }
+
+    function restore($path_inside_archive, $keep_in_archive = true)
+    {
+        $local_path = $this->makeFullPath($path_inside_archive);
+        if( file_exists($local_path) )
+            return $this->returnError(false, "File '$path_inside_archive' already exists locally");
+
+        $content = $this->get($local_path);
+        if ($this->lastError)
+            return;
+
+        $um = umask(0);
+        $dir = dirname($local_path);
+        if( !file_exists($dir) )
+			mkdir($dir,0777,true);
+        file_put_contents($local_path, $content);
+        umask($um);
+
+        if (!$keep_in_archive)
+            $this->delete($path_inside_archive);
+
+        return $local_path;
     }
 
     /**
