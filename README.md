@@ -5,4 +5,8 @@ It contains components that help handling file uploads.
 
 Installation
 ============
-Install the package with `composer require {{name}}`.
+Install the package with `composer require scavix/wdf-uploads`.
+
+Dependencies
+------------
+* [scavix/wdf-core (^1.1.0)](https://packagist.org/packages/scavix/wdf-core#v1.1.0)
