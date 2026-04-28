@@ -26,6 +26,7 @@
 namespace ScavixWDF\Uploads;
 
 use Exception;
+use RequestLogger;
 use ScavixWDF\Base\DateTimeEx;
 use ScavixWDF\Wdf;
 use ScavixWDF\WdfDbException;
@@ -383,6 +384,7 @@ trait WdfFileModel
             readfile($file);
             if (isset($fa))
                 @unlink($file);
+            RequestLogger::Finish('Downloaded: ' . $file);
         }
         die();
 	}
